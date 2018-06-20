@@ -50,7 +50,6 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
     }
 
     wrap(SubmitView, 'initialize', function (initialize) {
-        window.view = this;
         initialize.apply(this, _.rest(arguments));
         if (!shouldWrap(this)) {
             return;
@@ -58,6 +57,7 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
 
         this.arxivUrl = '';
         this.usesExternalData = false;
+        this.allowShare = false;
 
         setDefaultsFromApproach(this);
     });
@@ -141,7 +141,8 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             organizationUrl: this.organizationUrl,
             meta: {
                 arxivUrl: this.arxivUrl,
-                usesExternalData: this.usesExternalData
+                usesExternalData: this.usesExternalData,
+                agreeToSharingPolicy: this.allowShare
             },
             approach: this.approach
         });
@@ -159,6 +160,10 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             } else {
                 this.usesExternalData = false;
             }
+            this.validateInputs();
+        },
+        'input .isic-submission-allow-share-input': function (event) {
+            this.allowShare = $(event.currentTarget).prop('checked');
             this.validateInputs();
         }
     });

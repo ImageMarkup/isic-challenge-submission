@@ -42,7 +42,7 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             view.approach = submission.get('approach');
             view.organization = submission.get('organization');
             view.organizationUrl = submission.get('organizationUrl');
-            view.arxivUrl = meta.arxivUrl;
+            view.documentationUrl = submission.get('documentationUrl');
             view.usesExternalData = meta.usesExternalData;
 
             view.render();
@@ -55,7 +55,6 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             return;
         }
 
-        this.arxivUrl = '';
         this.usesExternalData = false;
         this.allowShare = false;
 
@@ -76,7 +75,7 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             approach: this.approach,
             organization: this.organization,
             organizationUrl: this.organizationUrl,
-            arxivUrl: this.arxivUrl,
+            documentationUrl: this.documentationUrl,
             usesExternalData: this.usesExternalData
         }));
 
@@ -111,7 +110,7 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
         } else if (_.isEmpty(this.organizationUrl)) {
             errorText = 'Please enter a URL for the organization or team.';
             valid = false;
-        } else if (_.isEmpty(this.arxivUrl)) {
+        } else if (_.isEmpty(this.documentationUrl)) {
             errorText = 'Please enter a URL for your arxiv abstract.';
             valid = false;
         } else if (!this.$('.isic-submission-allow-share-input').prop('checked')) {
@@ -139,8 +138,8 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             title: this.approach,
             organization: this.organization,
             organizationUrl: this.organizationUrl,
+            documentationUrl: this.documentationUrl,
             meta: {
-                arxivUrl: this.arxivUrl,
                 usesExternalData: this.usesExternalData,
                 agreeToSharingPolicy: this.allowShare
             },
@@ -149,10 +148,6 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
     });
 
     Object.assign(SubmitView.prototype.events, {
-        'input .isic-submission-arxiv-url-input': function (event) {
-            this.arxivUrl = $(event.currentTarget).val().trim();
-            this.validateInputs();
-        },
         'input .isic-submission-external-datasources-input': function (event) {
             const val = $(event.currentTarget).val().trim();
             if (val === 'yes') {

@@ -69,6 +69,7 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
         }
 
         this.$('.c-submission-approach-input').typeahead('destroy');
+        this.$('.c-submit-page-description').remove();
         this.$('.c-submit-uploader-container').html(submitViewForm({
             maxTextLength,
             maxUrlLength,

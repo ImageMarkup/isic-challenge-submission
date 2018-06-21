@@ -57,6 +57,7 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
 
         this.usesExternalData = false;
         this.allowShare = false;
+        this.createNewApproach = false;
 
         setDefaultsFromApproach(this);
     });
@@ -67,12 +68,18 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             return this;
         }
 
+        const approaches = _.filter(this.approaches, (approach) => approach !== 'default');
+        if (!approaches.length) {
+            this.createNewApproach = true;
+        }
         this.$('.c-submission-approach-input').typeahead('destroy');
         this.$('.c-submit-page-description').remove();
         this.$('.c-submit-uploader-container').html(submitViewForm({
             maxTextLength,
             maxUrlLength,
             approach: this.approach,
+            approaches,
+            createNewApproach: this.createNewApproach,
             organization: this.organization,
             organizationUrl: this.organizationUrl,
             documentationUrl: this.documentationUrl,
@@ -80,13 +87,7 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
         }));
 
         this.uploadWidget.setElement(this.$('.c-submit-upload-widget')).render();
-        this.$('.c-submission-approach-input').typeahead({
-            source: this.approaches,
-            afterSelect: () => {
-                this._updateApproach();
-                setDefaultsFromApproach(this);
-            }
-        });
+        this.$('.c-submit-upload-widget .g-start-upload').text('Submit');
 
         return this;
     });
@@ -148,6 +149,22 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
     });
 
     Object.assign(SubmitView.prototype.events, {
+        'click .isic-create-new-approach-button': function (event) {
+            this.createNewApproach = !this.createNewApproach;
+            this.approach = '';
+            if (!this.createNewApproach && this.approaches.length) {
+                this.approach = this.approaches[0];
+            }
+            this.render();
+        },
+        'change .isic-submission-approach-input': function (event) {
+            this.approach = $(event.currentTarget).val();
+            setDefaultsFromApproach(this);
+        },
+        'input .isic-submission-create-approach-input': function (event) {
+            this.approach = $(event.currentTarget).val().trim();
+            this.validateInputs();
+        },
         'input .isic-submission-external-datasources-input': function (event) {
             const val = $(event.currentTarget).val().trim();
             if (val === 'yes') {

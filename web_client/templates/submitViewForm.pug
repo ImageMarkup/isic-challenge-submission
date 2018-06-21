@@ -3,8 +3,26 @@
   .form-group
     label A brief description of your algorithm’s approach
     span.isic-submission-form-example e.g. "Quasi-adaptive deep learning with stochastic optimization"
-    input.c-submission-approach-input.isic-submission-approach-input.form-control.typeahead(
-    type='text', data-provide='typeahead', autocomplete='off', maxlength=maxTextLength, value=approach)
+    .input-group
+      if createNewApproach
+        input.isic-submission-create-approach-input.form-control(
+          type='text', maxlength=maxTextLength)
+      else
+        select.isic-submission-approach-input.form-control
+          for a in approaches
+            option(value=a, selected=a === approach)
+              = a
+      span.input-group-btn
+        if createNewApproach
+          - var disabled = !approaches.length
+          - var title = 'Use an existing approach';
+          if disabled
+            - title = 'No previous submissions found'
+          button.btn.btn-default.isic-create-new-approach-button(title=title, disabled=disabled)
+            i.icon-cancel
+        else
+          button.btn.btn-default.isic-create-new-approach-button(title='Create a new approach')
+            i.icon-plus
   .form-group
     label Your team's name
     span.isic-submission-form-example e.g. "State University Medical Center"

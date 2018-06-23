@@ -1,3 +1,4 @@
+import wrapPhaseView from './wrapPhaseView';
 import wrapSubmitView from './wrapSubmitView';
 
 function load() {
@@ -13,6 +14,10 @@ function load() {
         covalic.views.body.SubmitView,
         covalic.collections.SubmissionCollection,
         covalic.router
+    );
+
+    wrapPhaseView(
+        covalic.views.body.PhaseView
     );
 }
 

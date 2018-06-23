@@ -41,19 +41,23 @@
   h4.isic-section-header External data
   label.radio-inline
     input.isic-submission-external-datasources-input(
-      type='radio', name='c-external-datasources', value='yes', checked=usesExternalData)
+      type='radio', name='c-external-datasources', value='yes', checked=usesExternalData === true)
     | yes
   label.radio-inline
     input.isic-submission-external-datasources-input(
-    type='radio', name='c-external-datasources', value='no', checked=!usesExternalData)
+    type='radio', name='c-external-datasources', value='no', checked=usesExternalData === false)
     | no
   label.radio-inline
-    | Did you use any external data sources?
+    | Did you use any additional skin lesion or dermoscopic datasets to train your algorithm?
+    .isic-submission-form-subtext
+      | This is for categorizing purposes only and will not disqualify your submission
   h4.isic-section-header Data sharing policy
   .checkbox
     label
       input.isic-submission-allow-share-input(type='checkbox')
-      | Do you agree to allow us to share and use your submission for additional research?
+      | We agree to allow this submission to be shared and used for additional research?
+    .isic-submission-form-subtext.isic-submission-form-checkbox-margin
+      | Your agreement is required.
 .c-submission-validation-error
 h4.isic-section-header Upload output files
 .c-submit-upload-widget

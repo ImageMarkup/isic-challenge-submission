@@ -55,7 +55,7 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             return;
         }
 
-        this.usesExternalData = false;
+        this.usesExternalData = null;
         this.allowShare = false;
         this.createNewApproach = false;
 
@@ -114,6 +114,9 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
         } else if (_.isEmpty(this.documentationUrl)) {
             errorText = 'Please enter a URL for your arxiv abstract.';
             valid = false;
+        } else if (!_.isBoolean(this.usesExternalData)) {
+            errorText = 'You must answer whether or not you used any external data sources.';
+            valid = false;
         } else if (!this.$('.isic-submission-allow-share-input').prop('checked')) {
             errorText = 'You must agree to the data sharing policy before submitting.';
             valid = false;
@@ -169,8 +172,10 @@ export default function (SubmitView, SubmissionCollection, router, challengeId) 
             const val = $(event.currentTarget).val().trim();
             if (val === 'yes') {
                 this.usesExternalData = true;
-            } else {
+            } else if (val === 'no') {
                 this.usesExternalData = false;
+            } else {
+                this.usesExternalData = null;
             }
             this.validateInputs();
         },

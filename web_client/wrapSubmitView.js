@@ -9,9 +9,11 @@ import './stylesheets/submitViewForm.styl';
 const maxTextLength = 80;
 const maxUrlLength = 1024;
 
-export default function (SubmitView, SubmissionCollection, router, challengeId) {
+export default function (SubmitView, SubmissionCollection, router) {
     function shouldWrap(view) {
-        return view.phase.get('challengeId') === challengeId;
+        const meta = view.phase.get('meta');
+        const isicPhase = meta && meta.isic2018;
+        return isicPhase === 'validation' || isicPhase === 'final';
     }
 
     function setDefaultsFromApproach(view) {

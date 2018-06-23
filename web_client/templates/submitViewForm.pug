@@ -1,0 +1,63 @@
+.c-submission-mismatch-container
+.isic-submission-form
+  .form-group
+    label A brief description of your algorithm’s approach
+    span.isic-submission-form-example e.g. "Quasi-adaptive deep learning with stochastic optimization"
+    .input-group
+      if createNewApproach
+        input.isic-submission-create-approach-input.form-control(
+          type='text', maxlength=maxTextLength)
+      else
+        select.isic-submission-approach-input.form-control
+          for a in approaches
+            option(value=a, selected=a === approach)
+              = a
+      span.input-group-btn
+        if createNewApproach
+          - var disabled = !approaches.length
+          - var title = 'Use an existing approach';
+          if disabled
+            - title = 'No previous submissions found'
+          button.btn.btn-default.isic-create-new-approach-button(title=title, disabled=disabled)
+            i.icon-cancel
+        else
+          button.btn.btn-default.isic-create-new-approach-button(title='Create a new approach')
+            i.icon-plus
+  .form-group
+    label Your team's name
+    span.isic-submission-form-example e.g. "State University Medical Center"
+    input.c-submission-organization-input.form-control(
+      type='text', maxlength=maxTextLength, value=organization)
+  .form-group
+    label Website URL for your team
+    span.isic-submission-form-example e.g. "https://state-u.edu/medical"
+    input.c-submission-organization-url-input.form-control(
+      type='text', maxlength=maxUrlLength, value=organizationUrl)
+  .form-group
+    label URL for your arXiv abstract
+    span.isic-submission-form-example e.g. "https://arxiv.org/abs/1234.12345"
+    input.c-submission-documentation-url-input.form-control(
+      type='text', maxlength=maxUrlLength, value=documentationUrl)
+  h4.isic-section-header External data
+  label.radio-inline
+    input.isic-submission-external-datasources-input(
+      type='radio', name='c-external-datasources', value='yes', checked=usesExternalData === true)
+    | yes
+  label.radio-inline
+    input.isic-submission-external-datasources-input(
+    type='radio', name='c-external-datasources', value='no', checked=usesExternalData === false)
+    | no
+  label.radio-inline
+    | Did you use any additional skin lesion or dermoscopic datasets to train your algorithm?
+    .isic-submission-form-subtext
+      | This is for categorizing purposes only and will not disqualify your submission
+  h4.isic-section-header Data sharing policy
+  .checkbox
+    label
+      input.isic-submission-allow-share-input(type='checkbox')
+      | We agree to allow this submission to be shared and used for additional research?
+    .isic-submission-form-subtext.isic-submission-form-checkbox-margin
+      | Your agreement is required.
+.c-submission-validation-error
+h4.isic-section-header Upload output files
+.c-submit-upload-widget

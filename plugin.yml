@@ -1,0 +1,8 @@
+name: ISIC Challenge Submission
+description: A covalic extension to customize submission creation
+version: 0.1.0
+dependencies:
+    - covalic
+webpack:
+  main:
+    plugin: web_client/main.js

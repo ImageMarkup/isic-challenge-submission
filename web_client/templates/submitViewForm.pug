@@ -23,21 +23,24 @@
         else
           button.btn.btn-default.isic-create-new-approach-button(title='Create a new approach')
             i.icon-plus
-  .form-group
-    label Your team's name
-    span.isic-submission-form-example e.g. "State University Medical Center"
-    input.c-submission-organization-input.form-control(
-      type='text', maxlength=maxTextLength, value=organization)
-  .form-group
-    label Website URL for your team
-    span.isic-submission-form-example e.g. "https://state-u.edu/medical"
-    input.c-submission-organization-url-input.form-control(
-      type='text', maxlength=maxUrlLength, value=organizationUrl)
-  .form-group
-    label URL for your arXiv abstract
-    span.isic-submission-form-example e.g. "https://arxiv.org/abs/1234.12345"
-    input.c-submission-documentation-url-input.form-control(
-      type='text', maxlength=maxUrlLength, value=documentationUrl)
+  if phase.enableOrganization()
+    .form-group
+      label Your team's name
+      span.isic-submission-form-example e.g. "State University Medical Center"
+      input.c-submission-organization-input.form-control(
+        type='text', maxlength=maxTextLength, value=organization)
+  if phase.enableOrganizationUrl()
+    .form-group
+      label Website URL for your team
+      span.isic-submission-form-example e.g. "https://state-u.edu/medical"
+      input.c-submission-organization-url-input.form-control(
+        type='text', maxlength=maxUrlLength, value=organizationUrl)
+  if phase.enableDocumentationUrl()
+    .form-group
+      label URL for your arXiv abstract
+      span.isic-submission-form-example e.g. "https://arxiv.org/abs/1234.12345"
+      input.c-submission-documentation-url-input.form-control(
+        type='text', maxlength=maxUrlLength, value=documentationUrl)
   h4.isic-section-header External data
   label.radio-inline
     input.isic-submission-external-datasources-input(

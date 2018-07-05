@@ -79,6 +79,7 @@ export default function (SubmitView, SubmissionCollection, router) {
         this.$('.c-submit-uploader-container').html(submitViewForm({
             maxTextLength,
             maxUrlLength,
+            phase: this.phase,
             approach: this.approach,
             approaches,
             createNewApproach: this.createNewApproach,
@@ -107,13 +108,13 @@ export default function (SubmitView, SubmissionCollection, router) {
         if (_.isEmpty(this.approach)) {
             errorText = 'Please describe your algorithm\'s approach';
             valid = false;
-        } else if (_.isEmpty(this.organization)) {
+        } else if (this.phase.enableOrganization() && this.phase.requireOrganization() && _.isEmpty(this.organization)) {
             errorText = 'Please enter an organization or team name.';
             valid = false;
-        } else if (_.isEmpty(this.organizationUrl)) {
+        } else if (this.phase.enableOrganizationUrl() && this.phase.requireOrganizationUrl() && _.isEmpty(this.organizationUrl)) {
             errorText = 'Please enter a URL for the organization or team.';
             valid = false;
-        } else if (_.isEmpty(this.documentationUrl)) {
+        } else if (this.phase.enableDocumentationUrl() && this.phase.requireDocumentationUrl() && _.isEmpty(this.documentationUrl)) {
             errorText = 'Please enter a URL for your arxiv abstract.';
             valid = false;
         } else if (!_.isBoolean(this.usesExternalData)) {

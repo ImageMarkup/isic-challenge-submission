@@ -21,8 +21,14 @@
           button.btn.btn-default.isic-create-new-approach-button(title=title, disabled=disabled)
             i.icon-cancel
         else
-          button.btn.btn-default.isic-create-new-approach-button(title='Create a new approach')
+          - var hasMaxApproaches = approaches.length >= 3;
+          - var title = hasMaxApproaches ? 'Only 3 approaches are allowed per user' : 'Create a new approach';
+          button.btn.btn-default.isic-create-new-approach-button(
+            title=title, disabled=hasMaxApproaches)
             i.icon-plus
+    span.isic-submission-form-subtext
+      | Users may create up to three approaches per phase.  To delete or rename a previous approach, please
+      | #[a(href='https://forum.isic-archive.com/t/how-to-send-a-private-message-to-challenge-organizers/346') contact the Challenge organizers].
   if phase.enableOrganization()
     .form-group
       label Your team's name

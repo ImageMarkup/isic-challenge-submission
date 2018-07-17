@@ -78,7 +78,10 @@ export default function (SubmitView, SubmissionCollection, router) {
         const maxApproaches = getIsicPhase(this) === 'final' ? 3 : 0;
         if (!approaches.length) {
             this.createNewApproach = true;
+        } else if (maxApproaches && approaches.length >= maxApproaches) {
+            this.createNewApproach = false;
         }
+
         this.$('.c-submission-approach-input').typeahead('destroy');
         this.$('.c-submit-page-description').remove();
         this.$('.c-submit-uploader-container').html(submitViewForm({

@@ -10,9 +10,13 @@ const maxTextLength = 80;
 const maxUrlLength = 1024;
 
 export default function (SubmitView, SubmissionCollection, router) {
-    function shouldWrap(view) {
+    function getIsicPhase(view) {
         const meta = view.phase.get('meta');
-        const isicPhase = meta && meta.isic2018;
+        return meta && meta.isic2018;
+    }
+
+    function shouldWrap(view) {
+        const isicPhase = getIsicPhase(view);
         return isicPhase === 'validation' || isicPhase === 'final';
     }
 
@@ -71,6 +75,7 @@ export default function (SubmitView, SubmissionCollection, router) {
         }
 
         const approaches = _.filter(this.approaches, (approach) => approach !== 'default');
+        const maxApproaches = getIsicPhase(this) === 'final' ? 3 : 0;
         if (!approaches.length) {
             this.createNewApproach = true;
         }
@@ -79,6 +84,7 @@ export default function (SubmitView, SubmissionCollection, router) {
         this.$('.c-submit-uploader-container').html(submitViewForm({
             maxTextLength,
             maxUrlLength,
+            maxApproaches,
             phase: this.phase,
             approach: this.approach,
             approaches,

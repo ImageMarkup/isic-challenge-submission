@@ -163,6 +163,19 @@ export default function (SubmitView, SubmissionCollection, router) {
         });
     });
 
+    function readAndValidateInputs() {
+        const val = this.$('.isic-submission-external-datasources-input:checked').val();
+        if (val === 'yes') {
+            this.usesExternalData = true;
+        } else if (val === 'no') {
+            this.usesExternalData = false;
+        } else {
+            this.usesExternalData = null;
+        }
+        this.allowShare = this.$('.isic-submission-allow-share-input').prop('checked');
+        this.validateInputs();
+    }
+
     Object.assign(SubmitView.prototype.events, {
         'click .isic-create-new-approach-button': function (event) {
             this.createNewApproach = !this.createNewApproach;
@@ -180,20 +193,11 @@ export default function (SubmitView, SubmissionCollection, router) {
             this.approach = $(event.currentTarget).val().trim();
             this.validateInputs();
         },
-        'input .isic-submission-external-datasources-input': function (event) {
-            const val = $(event.currentTarget).val().trim();
-            if (val === 'yes') {
-                this.usesExternalData = true;
-            } else if (val === 'no') {
-                this.usesExternalData = false;
-            } else {
-                this.usesExternalData = null;
-            }
-            this.validateInputs();
-        },
-        'input .isic-submission-allow-share-input': function (event) {
-            this.allowShare = $(event.currentTarget).prop('checked');
-            this.validateInputs();
-        }
+        'input .isic-submission-external-datasources-input': readAndValidateInputs,
+        'change .isic-submission-external-datasources-input': readAndValidateInputs,
+        'click .isic-submission-external-datasources-input': readAndValidateInputs,
+        'input .isic-submission-allow-share-input': readAndValidateInputs,
+        'change .isic-submission-allow-share-input': readAndValidateInputs,
+        'click .isic-submission-allow-share-input': readAndValidateInputs
     });
 }

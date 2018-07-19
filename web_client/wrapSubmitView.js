@@ -55,6 +55,24 @@ export default function (SubmitView, SubmissionCollection, router) {
         });
     }
 
+    function readAndValidateInputs() {
+        const val = this.$('.isic-submission-external-datasources-input:checked').val();
+        if (val === 'yes') {
+            this.usesExternalData = true;
+        } else if (val === 'no') {
+            this.usesExternalData = false;
+        } else {
+            this.usesExternalData = null;
+        }
+        this.allowShare = this.$('.isic-submission-allow-share-input').prop('checked');
+        return this.validateInputs();
+    }
+
+    // Put this in a new function to avoid returning false to mean "preventDefault".
+    function inputChangeHandler() {
+        readAndValidateInputs.call(this);
+    }
+
     wrap(SubmitView, 'initialize', function (initialize) {
         initialize.apply(this, _.rest(arguments));
         if (!shouldWrap(this)) {
@@ -98,6 +116,12 @@ export default function (SubmitView, SubmissionCollection, router) {
             usesExternalData: this.usesExternalData
         }));
 
+        this.uploadWidget.startUpload = _.wrap(this.uploadWidget.startUpload, (startUpload) => {
+            if (readAndValidateInputs.call(this)) {
+                return startUpload.call(this.uploadWidget);
+            }
+        });
+        this.uploadWidget.setUploadEnabled(true);
         this.uploadWidget.setElement(this.$('.c-submit-upload-widget')).render();
         this.$('.c-submit-upload-widget .g-start-upload').text('Submit');
 
@@ -138,8 +162,7 @@ export default function (SubmitView, SubmissionCollection, router) {
             this.$('.c-submission-validation-error').text(errorText);
         }
 
-        var enabled = valid && this.filesCorrect;
-        this.uploadWidget.setUploadEnabled(enabled);
+        return valid && this.filesCorrect;
     });
 
     wrap(SubmitView, 'uploadFinished', function (uploadFinished) {
@@ -163,19 +186,6 @@ export default function (SubmitView, SubmissionCollection, router) {
         });
     });
 
-    function readAndValidateInputs() {
-        const val = this.$('.isic-submission-external-datasources-input:checked').val();
-        if (val === 'yes') {
-            this.usesExternalData = true;
-        } else if (val === 'no') {
-            this.usesExternalData = false;
-        } else {
-            this.usesExternalData = null;
-        }
-        this.allowShare = this.$('.isic-submission-allow-share-input').prop('checked');
-        this.validateInputs();
-    }
-
     Object.assign(SubmitView.prototype.events, {
         'click .isic-create-new-approach-button': function (event) {
             this.createNewApproach = !this.createNewApproach;
@@ -193,11 +203,11 @@ export default function (SubmitView, SubmissionCollection, router) {
             this.approach = $(event.currentTarget).val().trim();
             this.validateInputs();
         },
-        'input .isic-submission-external-datasources-input': readAndValidateInputs,
-        'change .isic-submission-external-datasources-input': readAndValidateInputs,
-        'click .isic-submission-external-datasources-input': readAndValidateInputs,
-        'input .isic-submission-allow-share-input': readAndValidateInputs,
-        'change .isic-submission-allow-share-input': readAndValidateInputs,
-        'click .isic-submission-allow-share-input': readAndValidateInputs
+        'input .isic-submission-external-datasources-input': inputChangeHandler,
+        'change .isic-submission-external-datasources-input': inputChangeHandler,
+        'click .isic-submission-external-datasources-input': inputChangeHandler,
+        'input .isic-submission-allow-share-input': inputChangeHandler,
+        'change .isic-submission-allow-share-input': inputChangeHandler,
+        'click .isic-submission-allow-share-input': inputChangeHandler
     });
 }

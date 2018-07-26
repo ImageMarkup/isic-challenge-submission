@@ -69,5 +69,12 @@
     .isic-submission-form-subtext.isic-submission-form-checkbox-margin
       | Your agreement is required.
 .c-submission-validation-error
-h4.isic-section-header Upload output files
+h4.isic-section-header Upload ZIP file
+if requiresPDFFile
+  span.
+      Upload a ZIP file that contains both your prediction files and an abstract as a PDF document.
+      Submissions that don't contain a PDF file will #[span.isic-text-underline not] be scored.
+else
+  span
+    | Upload a ZIP file that contains your prediction files.
 .c-submit-upload-widget

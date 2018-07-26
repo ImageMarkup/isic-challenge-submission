@@ -100,8 +100,10 @@ def _savePDF(event):
         user=user
     )
 
-    # Add reference to abstract file on submission
-    submission['meta']['abstractFileId'] = abstractFile['_id']
+    # Set submission documentation URL
+    submission['documentationUrl'] = \
+        'https://challenge.kitware.com/api/v1/file/%s/download?contentDisposition=inline' % \
+        abstractFile['_id']
     ModelImporter.model('submission', 'covalic').save(submission)
 
 

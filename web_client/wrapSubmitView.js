@@ -113,7 +113,8 @@ export default function (SubmitView, SubmissionCollection, router) {
             organization: this.organization,
             organizationUrl: this.organizationUrl,
             documentationUrl: this.documentationUrl,
-            usesExternalData: this.usesExternalData
+            usesExternalData: this.usesExternalData,
+            requiresPDFFile: getIsicPhase(this) === 'final'
         }));
 
         this.uploadWidget.startUpload = _.wrap(this.uploadWidget.startUpload, (startUpload) => {

@@ -70,4 +70,7 @@
       | Your agreement is required.
 .c-submission-validation-error
 h4.isic-section-header Upload output files
+if requiresPDFFile
+  span
+    | *You must include an abstract in your submission as a PDF document.  Submissions not containing a PDF file will #[span.isic-text-underline not] be scored.
 .c-submit-upload-widget

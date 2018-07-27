@@ -48,6 +48,24 @@ def _readFile(file):
     return buffer
 
 
+def _isPDF(zipItem):
+    """
+    Utility function to check whether an item in a ZIP file is a normal PDF file.
+    Ignores metadata added to ZIP files on Mac OS X.
+
+    :param zipItem: An item in a ZIP file, such as those returned by zipfile.infolist().
+    :type zipItem: zipfile.ZipInfo
+    :return: True if the item is a normal PDF file.
+    """
+    filename = zipItem.filename
+
+    # Ignore Mac OS X metadata
+    if filename.startswith('__MACOSX'):
+        return False
+
+    return filename.lower().endswith('.pdf')
+
+
 def _savePDF(event):
     """
     Extract PDF from submission ZIP file and save to a subfolder of the submission folder.
@@ -71,7 +89,7 @@ def _savePDF(event):
             pdfItems = [
                 zipItem
                 for zipItem in zipFile.infolist()
-                if zipItem.filename.lower().endswith('.pdf')
+                if _isPDF(zipItem)
             ]
             if not pdfItems or len(pdfItems) > 1:
                 logger.warning(

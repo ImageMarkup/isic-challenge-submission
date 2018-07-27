@@ -30,6 +30,9 @@ from girder.models.user import User
 from girder.utility.model_importer import ModelImporter
 
 
+READ_SIZE = 4 * 1024 * 1024
+
+
 def _readFile(file):
     """
     Read file data into an in-memory buffer.
@@ -41,7 +44,7 @@ def _readFile(file):
     buffer = io.BytesIO()
     with File().open(file) as fileHandle:
         while True:
-            chunk = fileHandle.read()
+            chunk = fileHandle.read(size=READ_SIZE)
             if not chunk:
                 break
             buffer.write(chunk)

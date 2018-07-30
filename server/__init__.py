@@ -118,7 +118,8 @@ def _savePDF(event):
         name=pdfFileName,
         parentType='folder',
         parent=abstractFolder,
-        user=user
+        user=user,
+        mimeType='application/pdf'
     )
 
     # Set submission documentation URL

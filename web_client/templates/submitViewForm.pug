@@ -42,12 +42,6 @@
       span.isic-submission-form-example e.g. "https://state-u.edu/medical"
       input.c-submission-organization-url-input.form-control(
         type='text', maxlength=maxUrlLength, value=organizationUrl)
-  if phase.enableDocumentationUrl()
-    .form-group
-      label URL for your arXiv abstract
-      span.isic-submission-form-example e.g. "https://arxiv.org/abs/1234.12345"
-      input.c-submission-documentation-url-input.form-control(
-        type='text', maxlength=maxUrlLength, value=documentationUrl)
   h4.isic-section-header External data
   label.radio-inline
     input.isic-submission-external-datasources-input(

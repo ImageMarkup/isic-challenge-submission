@@ -48,7 +48,6 @@ export default function (SubmitView, SubmissionCollection, router) {
             view.approach = submission.get('approach');
             view.organization = submission.get('organization');
             view.organizationUrl = submission.get('organizationUrl');
-            view.documentationUrl = submission.get('documentationUrl');
             view.usesExternalData = meta.usesExternalData;
 
             view.render();
@@ -112,7 +111,6 @@ export default function (SubmitView, SubmissionCollection, router) {
             createNewApproach: this.createNewApproach,
             organization: this.organization,
             organizationUrl: this.organizationUrl,
-            documentationUrl: this.documentationUrl,
             usesExternalData: this.usesExternalData,
             requiresPDFFile: getIsicPhase(this) === 'final'
         }));
@@ -148,9 +146,6 @@ export default function (SubmitView, SubmissionCollection, router) {
         } else if (this.phase.enableOrganizationUrl() && this.phase.requireOrganizationUrl() && _.isEmpty(this.organizationUrl)) {
             errorText = 'Please enter a URL for the organization or team.';
             valid = false;
-        } else if (this.phase.enableDocumentationUrl() && this.phase.requireDocumentationUrl() && _.isEmpty(this.documentationUrl)) {
-            errorText = 'Please enter a URL for your arxiv abstract.';
-            valid = false;
         } else if (!_.isBoolean(this.usesExternalData)) {
             errorText = 'You must answer whether or not you used any external data sources.';
             valid = false;
@@ -178,7 +173,6 @@ export default function (SubmitView, SubmissionCollection, router) {
             title: this.approach,
             organization: this.organization,
             organizationUrl: this.organizationUrl,
-            documentationUrl: this.documentationUrl,
             meta: {
                 usesExternalData: this.usesExternalData,
                 agreeToSharingPolicy: this.allowShare

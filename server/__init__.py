@@ -172,6 +172,21 @@ def afterPostScore(event):
             % item['_id'])
         return
 
+    # Abort if submission folder already contains an 'Abstract' folder
+    abstractFolder = Folder().findOne(
+        query={
+            'parentId': folder['_id'],
+            'parentCollection': 'folder',
+            'name': 'Abstract'
+        },
+        fields=['_id']
+    )
+    if abstractFolder is not None:
+        logger.warning(
+            'afterPostScore: Abstract folder already exists in submission folder; aborting '
+            '(FolderId=%s)' % folder['_id'])
+        return
+
     # Process asynchronously
     events.daemon.trigger(info={
         'submission': submission,

@@ -150,16 +150,41 @@ def afterPostScore(event):
     # Load submission folder
     folder = Folder().load(submission['folderId'], force=True)
     if not folder:
+        logger.warning(
+            'afterPostScore: Failed to load submission folder; aborting (FolderId=%s)'
+            % folder['_id'])
         return
 
     # Expect only one item in the folder
     items = list(Folder().childItems(folder, limit=2))
     if not items or len(items) > 1:
+        logger.warning(
+            'afterPostScore: Found more than one item in submission folder; aborting (FolderId=%s)'
+            % folder['_id'])
         return
 
     # Expect only one file in the item
-    files = list(Item().childFiles(items[0], limit=2))
+    item = items[0]
+    files = list(Item().childFiles(item, limit=2))
     if not files or len(files) > 1:
+        logger.warning(
+            'afterPostScore: Found more than one file in submission item; aborting (ItemId=%s)'
+            % item['_id'])
+        return
+
+    # Abort if submission folder already contains an 'Abstract' folder
+    abstractFolder = Folder().findOne(
+        query={
+            'parentId': folder['_id'],
+            'parentCollection': 'folder',
+            'name': 'Abstract'
+        },
+        fields=['_id']
+    )
+    if abstractFolder is not None:
+        logger.warning(
+            'afterPostScore: Abstract folder already exists in submission folder; aborting '
+            '(FolderId=%s)' % folder['_id'])
         return
 
     # Process asynchronously

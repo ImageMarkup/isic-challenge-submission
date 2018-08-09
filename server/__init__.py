@@ -143,7 +143,7 @@ def afterPostScore(event):
     phase = ModelImporter.model('phase', 'covalic').load(submission['phaseId'], force=True)
 
     # Handle only submissions to ISIC 2018 Final Test phases
-    isicPhase = phase['meta'].get('isic2018', '')
+    isicPhase = phase.get('meta', {}).get('isic2018')
     if isicPhase != 'final':
         return
 

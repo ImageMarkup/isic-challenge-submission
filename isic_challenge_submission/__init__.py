@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 ###############################################################################
 #  Copyright Kitware Inc.
 #
@@ -21,7 +18,7 @@ import io
 import os
 import zipfile
 
-from girder import events, logger
+from girder import events, logger, plugin
 from girder.models.file import File
 from girder.models.folder import Folder
 from girder.models.item import Item
@@ -53,8 +50,9 @@ def _readFile(file):
 
 def _isPDF(zipItem):
     """
-    Utility function to check whether an item in a ZIP file is a normal PDF file.
-    Ignores metadata added to ZIP files on Mac OS X.
+    Check whether an item in a ZIP file is a normal PDF file.
+
+    This ignores metadata added to ZIP files on Mac OS X.
 
     :param zipItem: An item in a ZIP file, such as those returned by zipfile.infolist().
     :type zipItem: zipfile.ZipInfo
@@ -195,6 +193,11 @@ def afterPostScore(event):
     }, callback=_savePDF)
 
 
-def load(info):
-    # Add event listeners
-    events.bind('rest.post.covalic_submission/:id/score.after', info['name'], afterPostScore)
+class GirderPlugin(plugin.GirderPlugin):
+    DISPLAY_NAME = 'ISIC Challenge Submission'
+    CLIENT_SOURCE_PATH = 'web_client'
+
+    def load(self, info):
+        # Add event listeners
+        events.bind('rest.post.covalic_submission/:id/score.after', 'isic_challenge_submission',
+                    afterPostScore)

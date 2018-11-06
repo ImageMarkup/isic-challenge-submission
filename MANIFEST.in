@@ -1,0 +1,8 @@
+include LICENSE
+include README.rst
+include setup.py
+
+graft isic_challenge_submission
+graft docs
+prune test
+global-exclude *.py[co] __pycache__ node_modules

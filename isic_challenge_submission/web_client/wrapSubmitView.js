@@ -167,6 +167,8 @@ export default function (SubmitView, SubmissionCollection, router) {
         }
         this.submission.on('c:submissionPosted', function () {
             router.navigate(`submission/${this.submission.id}`, {trigger: true});
+        }, this).once('c:error', function (err) {
+            this.$('.c-submission-validation-error').text(err.responseJSON.message);
         }, this).postSubmission({
             phaseId: this.phase.id,
             folderId: this.folder.id,

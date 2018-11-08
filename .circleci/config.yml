@@ -1,0 +1,52 @@
+---
+
+version: 2
+jobs:
+  lint:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run: |
+          virtualenv $HOME/lint
+          . $HOME/lint/bin/activate
+          pip install tox
+          tox -e lint
+
+  test_py27:
+    docker:
+      - image: circleci/python:2.7
+      - image: circleci/mongo:4.1-ram
+        # The default Dockerfile includes --smallfiles which appears to no longer be supported,
+        # see: https://github.com/circleci/circleci-images/blob/master/mongo/resources/Dockerfile-ram.template
+        command: ["mongod", "--nojournal", "--noprealloc", "--dbpath=/dev/shm/mongo"]
+    steps:
+      - checkout
+      - run: |
+          virtualenv $HOME/py27
+          . $HOME/py27/bin/activate
+          pip install tox
+          tox -e py27
+
+  test_py36:
+    docker:
+      - image: circleci/python:3.6
+      - image: circleci/mongo:4.1-ram
+        # The default Dockerfile includes --smallfiles which appears to no longer be supported,
+        # see: https://github.com/circleci/circleci-images/blob/master/mongo/resources/Dockerfile-ram.template
+        command: ["mongod", "--nojournal", "--noprealloc", "--dbpath=/dev/shm/mongo"]
+    steps:
+      - checkout
+      - run: |
+          virtualenv $HOME/py36
+          . $HOME/py36/bin/activate
+          pip install tox
+          tox -e py36
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - lint
+      - test_py27
+      - test_py36

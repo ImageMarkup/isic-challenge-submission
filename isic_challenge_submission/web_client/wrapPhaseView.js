@@ -3,8 +3,8 @@ import { wrap } from 'girder/utilities/PluginUtils';
 export default function (PhaseView) {
     function shouldWrap(view) {
         const meta = view.model.get('meta');
-        const isicPhase = meta && meta.isic2018;
-        return isicPhase === 'validation';
+        const isicMeta = meta && meta.isic;
+        return isicMeta && isicMeta.phaseType === 'validation';
     }
 
     wrap(PhaseView, 'render', function (render) {

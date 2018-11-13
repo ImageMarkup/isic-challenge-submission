@@ -14,11 +14,17 @@
 #  limitations under the License.
 ###############################################################################
 
+from datetime import datetime, timedelta
 import io
 import os
 import zipfile
 
+from covalic.models.phase import Phase
+from covalic.models.submission import Submission
 from girder import events, logger, plugin
+from girder.api import access
+from girder.api.rest import getCurrentUser
+from girder.exceptions import RestException
 from girder.models.file import File
 from girder.models.folder import Folder
 from girder.models.item import Item
@@ -141,8 +147,11 @@ def afterPostScore(event):
     phase = ModelImporter.model('phase', 'covalic').load(submission['phaseId'], force=True)
 
     # Handle only submissions to ISIC 2018 Final Test phases
-    isicPhase = phase.get('meta', {}).get('isic2018')
-    if isicPhase != 'final':
+    isicMeta = phase.get('meta', {}).get('isic')
+    if not isicMeta:
+        return
+
+    if not (isicMeta['challengeYear'] in ['2018', 'live'] and isicMeta['phaseType'] == 'final'):
         return
 
     # Load submission folder
@@ -193,6 +202,57 @@ def afterPostScore(event):
     }, callback=_savePDF)
 
 
+@access.user
+def throttleIsicSubmissions(event):
+    user = getCurrentUser()
+
+    # If there isn't a phaseId, then validation will catch it
+    if event.info['params'].get('phaseId'):
+        phase = Phase().load(id=event.info['params']['phaseId'], force=True)
+        if phase:
+            isicMeta = phase.get('meta', {}).get('isic')
+            if not isicMeta:
+                return
+
+            if not (isicMeta['challengeYear'] == 'live' and isicMeta['phaseType'] == 'final'):
+                return
+
+            # Recent submissions that should count against the user are ones which
+            # are in the middle of being scored or have failed to be scored.
+            recentSubmissions = Submission().collection.aggregate([
+                {
+                    '$match': {
+                        'phaseId': phase['_id'],
+                        'creatorId': user['_id'],
+                        'created': {'$gte': datetime.utcnow() - timedelta(weeks=1)}
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'job',
+                        'localField': 'jobId',
+                        'foreignField': '_id',
+                        'as': 'job'
+                    }
+                }, {
+                    '$match': {
+                        'job.status': {
+                            '$ne': 4  # Error
+                        }
+                    }
+                }, {
+                    '$count': 'count'
+                }
+            ])
+
+            try:
+                numRecentSubmissions = recentSubmissions.next()['count']
+            except StopIteration:
+                numRecentSubmissions = 0
+
+            if numRecentSubmissions > 0:
+                raise RestException('Only one submission per phase is allowed per week', 403)
+
+
 class GirderPlugin(plugin.GirderPlugin):
     DISPLAY_NAME = 'ISIC Challenge Submission'
     CLIENT_SOURCE_PATH = 'web_client'
@@ -201,3 +261,5 @@ class GirderPlugin(plugin.GirderPlugin):
         # Add event listeners
         events.bind('rest.post.covalic_submission/:id/score.after', 'isic_challenge_submission',
                     afterPostScore)
+        events.bind('rest.post.covalic_submission.before', 'throttle_isic_submissions',
+                    throttleIsicSubmissions)

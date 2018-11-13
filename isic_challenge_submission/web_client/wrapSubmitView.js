@@ -10,13 +10,13 @@ const maxTextLength = 80;
 const maxUrlLength = 1024;
 
 export default function (SubmitView, SubmissionCollection, router) {
-    function getIsicPhase(view) {
+    function getIsicPhaseType(view) {
         const meta = view.phase.get('meta');
-        return meta && meta.isic2018;
+        return meta && meta.isic && meta.isic.phaseType;
     }
 
     function shouldWrap(view) {
-        const isicPhase = getIsicPhase(view);
+        const isicPhase = getIsicPhaseType(view);
         return isicPhase === 'validation' || isicPhase === 'final';
     }
 
@@ -92,7 +92,7 @@ export default function (SubmitView, SubmissionCollection, router) {
         }
 
         const approaches = _.filter(this.approaches, (approach) => approach !== 'default');
-        const maxApproaches = getIsicPhase(this) === 'final' ? 3 : 0;
+        const maxApproaches = getIsicPhaseType(this) === 'final' ? 3 : 0;
         if (!approaches.length) {
             this.createNewApproach = true;
         } else if (maxApproaches && approaches.length >= maxApproaches) {
@@ -112,7 +112,7 @@ export default function (SubmitView, SubmissionCollection, router) {
             organization: this.organization,
             organizationUrl: this.organizationUrl,
             usesExternalData: this.usesExternalData,
-            requiresPDFFile: getIsicPhase(this) === 'final'
+            requiresPDFFile: getIsicPhaseType(this) === 'final'
         }));
 
         this.uploadWidget.startUpload = _.wrap(this.uploadWidget.startUpload, (startUpload) => {
@@ -167,6 +167,8 @@ export default function (SubmitView, SubmissionCollection, router) {
         }
         this.submission.on('c:submissionPosted', function () {
             router.navigate(`submission/${this.submission.id}`, {trigger: true});
+        }, this).once('c:error', function (err) {
+            this.$('.c-submission-validation-error').text(err.responseJSON.message);
         }, this).postSubmission({
             phaseId: this.phase.id,
             folderId: this.folder.id,

@@ -147,8 +147,11 @@ def afterPostScore(event):
     phase = ModelImporter.model('phase', 'covalic').load(submission['phaseId'], force=True)
 
     # Handle only submissions to ISIC 2018 Final Test phases
-    isicPhase = phase.get('meta', {}).get('isic2018')
-    if isicPhase != 'final':
+    isicMeta = phase.get('meta', {}).get('isic')
+    if not isicMeta:
+        return
+
+    if not (isicMeta['challengeYear'] in ['2018', 'live'] and isicMeta['phaseType'] == 'final'):
         return
 
     # Load submission folder
@@ -207,8 +210,11 @@ def throttleIsicSubmissions(event):
     if event.info['params'].get('phaseId'):
         phase = Phase().load(id=event.info['params']['phaseId'], force=True)
         if phase:
-            isicPhase = phase.get('meta', {}).get('isic2018')
-            if isicPhase != 'final':
+            isicMeta = phase.get('meta', {}).get('isic')
+            if not isicMeta:
+                return
+
+            if not (isicMeta['challengeYear'] == 'live' and isicMeta['phaseType'] == 'final'):
                 return
 
             # Recent submissions that should count against the user are ones which

@@ -1,9 +1,12 @@
 # Build outputs
+build/
 node_modules/
 *.egg-info
 
 # Toolchain generated
 __pycache__
+.coverage
+.coverage.*
 .eslintcache
 /npm-debug.log
 *.py[cod]

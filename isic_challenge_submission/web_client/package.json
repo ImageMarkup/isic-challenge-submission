@@ -1,0 +1,12 @@
+{
+    "name": "@isic/isic-challenge-submission",
+    "version": "0.1.0",
+    "private": true,
+    "description": "A covalic extension to customize submission creation",
+    "homepage": "https://github.com/ImageMarkup/isic-challenge-submission",
+    "license": "Apache-2.0",
+    "girderPlugin": {
+        "name": "isic_challenge_submission",
+        "main": "./main.js"
+    }
+}

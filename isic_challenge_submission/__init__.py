@@ -249,7 +249,7 @@ def throttleIsicSubmissions(event):
             except StopIteration:
                 numRecentSubmissions = 0
 
-            if numRecentSubmissions > 10:
+            if numRecentSubmissions >= 10:
                 raise RestException('Only ten submission per phase are allowed per week', 403)
 
 

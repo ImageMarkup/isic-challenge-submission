@@ -249,8 +249,8 @@ def throttleIsicSubmissions(event):
             except StopIteration:
                 numRecentSubmissions = 0
 
-            if numRecentSubmissions > 0:
-                raise RestException('Only one submission per phase is allowed per week', 403)
+            if numRecentSubmissions > 10:
+                raise RestException('Only ten submission per phase are allowed per week', 403)
 
 
 class GirderPlugin(plugin.GirderPlugin):

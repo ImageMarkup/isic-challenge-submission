@@ -17,9 +17,9 @@ jobs:
     docker:
       - image: circleci/python:2.7
       - image: circleci/mongo:4.1-ram
-        # The default Dockerfile includes --smallfiles which appears to no longer be supported,
+        # The default Dockerfile includes --smallfiles and --noprealloc which appear to no longer be supported,
         # see: https://github.com/circleci/circleci-images/blob/master/mongo/resources/Dockerfile-ram.template
-        command: ["mongod", "--nojournal", "--noprealloc", "--dbpath=/dev/shm/mongo"]
+        command: ["mongod", "--nojournal", "--dbpath=/dev/shm/mongo"]
     steps:
       - checkout
       - run: |
@@ -32,9 +32,9 @@ jobs:
     docker:
       - image: circleci/python:3.6
       - image: circleci/mongo:4.1-ram
-        # The default Dockerfile includes --smallfiles which appears to no longer be supported,
+        # The default Dockerfile includes --smallfiles and --noprealloc which appear to no longer be supported,
         # see: https://github.com/circleci/circleci-images/blob/master/mongo/resources/Dockerfile-ram.template
-        command: ["mongod", "--nojournal", "--noprealloc", "--dbpath=/dev/shm/mongo"]
+        command: ["mongod", "--nojournal", "--dbpath=/dev/shm/mongo"]
     steps:
       - checkout
       - run: |

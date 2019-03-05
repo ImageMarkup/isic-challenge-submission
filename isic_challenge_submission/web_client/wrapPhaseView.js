@@ -1,4 +1,4 @@
-import { wrap } from 'girder/utilities/PluginUtils';
+import { wrap } from '@girder/core/utilities/PluginUtils';
 
 export default function (PhaseView) {
     function shouldWrap(view) {

@@ -1,7 +1,7 @@
 import _ from 'underscore';
-import { getCurrentUser } from 'girder/auth';
-import { SORT_DESC } from 'girder/constants';
-import { wrap } from 'girder/utilities/PluginUtils';
+import { getCurrentUser } from '@girder/core/auth';
+import { SORT_DESC } from '@girder/core/constants';
+import { wrap } from '@girder/core/utilities/PluginUtils';
 
 import submitViewForm from './templates/submitViewForm.pug';
 import './stylesheets/submitViewForm.styl';
